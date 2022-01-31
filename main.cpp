@@ -48,7 +48,7 @@ int main() {
 		else if (strcmp(input, "DELETE") == 0) { //delete students
 			cout << "What is the students ID?" << endl;
 			cin >> input;
-			deleteStudent(head, input);
+			deleteStudent(head, stoi(input));
 		}
 		else if (strcmp(input, "QUIT") == 0) { //quit program
 			return 0;
@@ -114,9 +114,9 @@ void deleteStudent(Node* n, int sid) {
 			// middle of list
 			else {
 				Node* nTemp = n->getNext();
-				n->setNext(n->getNext()-getNext());
+				n->setNext(n->getNext()->getNext());
 				delete nTemp;
-				return
+				return;
 			}
 		}
 		else {
