@@ -17,13 +17,14 @@ using namespace std;
 
 void addStudent(Node* checkn, Node* addn);
 void printStudents(Node* n);
-void deleteStudent(Node* n, int sid);
+void deleteStudent(Node* n, int sid, Node** head);
+float average(Node* n, float gpas, int total);
 
 int main() {
 	Node* head = NULL;
 	while (true) { //loop
 		char input[20];
-		cout << "Enter a command (ADD, PRINT, DELETE, QUIT): ";
+		cout << "Enter a command (ADD, PRINT, DELETE, AVERAGE, QUIT): ";
 		cin >> input;
 		if (strcmp(input, "ADD") == 0) { //add students
 			Student* student = new Student(); // student 1 node
@@ -48,7 +49,11 @@ int main() {
 		else if (strcmp(input, "DELETE") == 0) { //delete students
 			cout << "What is the students ID?" << endl;
 			cin >> input;
-			deleteStudent(head, stoi(input));
+			deleteStudent(head, stoi(input), &head);
+		}
+		else if (strcmp(input, "AVERAGE") == 0) { //delete students
+			cout << setprecision(3);
+			cout << average(head, 0, 0) << endl;
 		}
 		else if (strcmp(input, "QUIT") == 0) { //quit program
 			return 0;
@@ -76,14 +81,15 @@ void printStudents(Node* n) {
 	if (n == NULL) {
 		return;
 	}
-	cout << setprecision(2);
+	cout << setprecision(3);
 	cout << n->getStudent()->getFirst() << " " << n->getStudent()->getLast() << " " << n->getStudent()->getID() << " " << n->getStudent()->getGPA() << endl; // output student info
 	if (n->getNext() != NULL) {
 		printStudents(n->getNext());
 	}
 }
 	
-void deleteStudent(Node* n, int sid) {
+void deleteStudent(Node* n, int sid, Node** head_ptr) {
+	Node* temp = NULL;
 	//list 0
 	if (n == NULL) {
 		return;
@@ -91,42 +97,65 @@ void deleteStudent(Node* n, int sid) {
 	//if head ==
 	if (n->getStudent()->getID() == sid) {
 		if (n->getNext() == NULL) { // head = 1 long list
-			n = NULL;
+			delete n;
+			*head_ptr = NULL;
+			return;
+
 		}
 		else { // first of list
-			Node* tempHead = n;
-			n = n->getNext();
-			delete tempHead;
+		        temp = n;
+			*head_ptr = n->getNext();
+			cout << "delete head" << endl;
+			delete temp;
+			cout << "returning head" << endl;
+			return;
 		}
 	}
 	else { // check next
 		if (n->getNext() == NULL) {
+			cout << "not in list" << endl;
 			return;
 		}
 		if (n->getNext()->getStudent()->getID() == sid) {
 			//end of list
 			if (n->getNext()->getNext() == NULL) {
-				Node* nTemp = n->getNext();
+				temp = n->getNext();
 				n->setNext(NULL);
-				delete nTemp;
+				cout << "delete end" << endl;
+				delete temp;
 				return;
 			}
 			// middle of list
 			else {
-				Node* nTemp = n->getNext();
+				temp = n->getNext();
 				n->setNext(n->getNext()->getNext());
-				delete nTemp;
+				cout << "delete middle" << endl;
+				delete temp;
 				return;
 			}
 		}
 		else {
 			// recurse
-			deleteStudent(n->getNext(), sid);
+			cout << "recurse" << endl;
+			deleteStudent(n->getNext(), sid, head_ptr);
 			return;
 		}
 	}
 }
 		
+float average(Node* n, float gpas, int total) {
+	if (n == NULL) {
+		return 0;
+	}
+	gpas = gpas + n->getStudent()->getGPA();
+	total++;
+	if (n->getNext() != NULL) {
+		average(n->getNext(), gpas, total);
+	}
+	else {
+		return (gpas / total);
+	}
 
+}
 
 
