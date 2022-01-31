@@ -6,15 +6,16 @@
 #include "node.h"
 
 
-/*
- *Justin Iness
- *11/17/2021
- *Student List
- * C++ Programming
- */
+#if 0
+Justin Iness
+1/30/2021
+Linked Student List Main
+C++ Programming
+#endif
 
 using namespace std;
 
+//functions
 void addStudent(Node* checkn, Node* addn);
 void printStudents(Node* n);
 void deleteStudent(Node* n, int sid, Node** head);
@@ -27,20 +28,20 @@ int main() {
 		cout << "Enter a command (ADD, PRINT, DELETE, AVERAGE, QUIT): ";
 		cin >> input;
 		if (strcmp(input, "ADD") == 0) { //add students
-			Student* student = new Student(); // student 1 node
-			Node* node = new Node(student);
-			node->setNext(NULL);
+			Student* student = new Student(); // student
+			Node* node = new Node(student); // node linked to student
+			node->setNext(NULL); // clear
 			//if list len = 0
 			if (head == NULL) {
 				head = node;
 			}
-			//if less then head
+			//if less then head (put in first)
 			else if (node->getStudent()->getID() < head->getStudent()->getID()) {
 				node->setNext(head);
 				head = node;
 			}
 			else {
-				addStudent(head, node);
+				addStudent(head, node); // recursive through list
 			}
 		}
 		else if (strcmp(input, "PRINT") == 0) { //print students
@@ -51,7 +52,7 @@ int main() {
 			cin >> input;
 			deleteStudent(head, stoi(input), &head);
 		}
-		else if (strcmp(input, "AVERAGE") == 0) { //delete students
+		else if (strcmp(input, "AVERAGE") == 0) { //average gpas
 			cout << setprecision(3);
 			cout << average(head, 0, 0) << endl;
 		}
@@ -63,46 +64,45 @@ int main() {
 
 
 void addStudent(Node* checkn, Node* addn) {
-	//if anything else
-	//if greater then next
+	//if not end of list
 	if (checkn->getNext() != NULL) {
-		if (checkn->getNext()->getStudent()->getID() < addn->getStudent()->getID()) {
+		if (checkn->getNext()->getStudent()->getID() < addn->getStudent()->getID()) { // if greater then next
 			addStudent(checkn->getNext(), addn);
 			return;
 		}	
 	//if less then next
 		else {
-			addn->setNext(checkn->getNext());
+			addn->setNext(checkn->getNext()); // insert node here
 		}
 	}
 	checkn->setNext(addn);
 }
 void printStudents(Node* n) {
-	if (n == NULL) {
+	if (n == NULL) { // empty list
 		return;
 	}
-	cout << setprecision(3);
+	cout << setprecision(3); // 2 decimals
 	cout << n->getStudent()->getFirst() << " " << n->getStudent()->getLast() << " " << n->getStudent()->getID() << " " << n->getStudent()->getGPA() << endl; // output student info
-	if (n->getNext() != NULL) {
+	if (n->getNext() != NULL) { // as long as not end of list recursive
 		printStudents(n->getNext());
 	}
 }
 	
 void deleteStudent(Node* n, int sid, Node** head_ptr) {
 	Node* temp = NULL;
-	//list 0
+	//list len 0
 	if (n == NULL) {
 		return;
 	}
-	//if head ==
+	//if head == delete id
 	if (n->getStudent()->getID() == sid) {
-		if (n->getNext() == NULL) { // head = 1 long list
+		if (n->getNext() == NULL) { // 1 long list and head
 			delete n;
 			*head_ptr = NULL;
 			return;
 
 		}
-		else { // first of list
+		else { // first of list > len 1
 		        temp = n;
 			*head_ptr = n->getNext();
 			cout << "delete head" << endl;
@@ -111,12 +111,12 @@ void deleteStudent(Node* n, int sid, Node** head_ptr) {
 			return;
 		}
 	}
-	else { // check next
-		if (n->getNext() == NULL) {
+	else { // middle, end or not in list
+		if (n->getNext() == NULL) { // not in list
 			cout << "not in list" << endl;
 			return;
 		}
-		if (n->getNext()->getStudent()->getID() == sid) {
+		if (n->getNext()->getStudent()->getID() == sid) { // found delete id
 			//end of list
 			if (n->getNext()->getNext() == NULL) {
 				temp = n->getNext();
@@ -144,15 +144,16 @@ void deleteStudent(Node* n, int sid, Node** head_ptr) {
 }
 		
 float average(Node* n, float gpas, int total) {
-	if (n == NULL) {
+	if (n == NULL) { // len 0
 		return 0;
 	}
 	gpas = gpas + n->getStudent()->getGPA();
 	total++;
-	if (n->getNext() != NULL) {
+	//add up gpas and total
+	if (n->getNext() != NULL) { // recurse if not end
 		average(n->getNext(), gpas, total);
 	}
-	else {
+	else { // return average gpas / total
 		return (gpas / total);
 	}
 
